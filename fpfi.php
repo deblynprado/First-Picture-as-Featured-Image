@@ -27,60 +27,56 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class First_Picture_as_FirstImage {
-	function get_first_image() {
-		$fpfi_query = array();
-		$the_query = get_posts( 'post_type=post' );
+function check_thumbnail_image( $opt ) {
+	$fpfi_query = array();
+	$the_query = get_posts( 'post_type=' . $opt['fpfi_post_type'] );
 
-		foreach ( $the_query as $post ) : setup_postdata( $post );
+	foreach ( $the_query as $post ) : setup_postdata( $post );
+	if ( !has_post_thumbnail( $post->ID ) ) :
+		get_first_image( $opt );
+	endif;
+	endforeach;
+	wp_reset_postdata();
+	return $fpfi_query;
+}
 
+function get_first_image( $opt ) {
+	$fpfi_query = array();
+	$the_query = get_posts( 'post_type=' . $opt['fpfi_post_type'] );
+
+	foreach ( $the_query as $post ) : setup_postdata( $post );
 		$first_img = '';
 		ob_start();
 		ob_end_clean();
 		$output = preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches );
 		$first_img = $matches [1][0];
-		return $first_img;
-		endforeach;
-		wp_reset_postdata();
-		return $fpfi_query;
-	}
-
-	function check_thumbnail_image() {
-		$fpfi_query = array();
-		$the_query = get_posts( 'post_type=post' );
-
-		foreach ( $the_query as $post ) : setup_postdata( $post );
-		if ( !has_post_thumbnail( $post->ID ) ) :
-			set_new_thumbnail_image( $post->ID );
+		if ( '' != $first_img ) :
+			set_new_thumbnail_image( $post->ID, $opt, $first_img );
 		endif;
-		endforeach;
-		wp_reset_postdata();
-		return $fpfi_query;
-	}
-
-	function set_new_thumbnail_image( $postid ) {
-		$fpfi_query = array();
-		$the_query = get_posts( 'post_type=post' );
-
-		foreach ( $the_query as $post ) : setup_postdata( $post );
-			$firstImage = get_first_image();
-			$attachment_id = attachment_url_to_postid( $firstImage );
-			set_post_thumbnail( $postid, $attachment_id );
-		endforeach;
-			wp_reset_postdata();
-		return $fpfi_query;
-	}
+		return $first_img;
+	endforeach;
+	wp_reset_postdata();
 }
 
-require_once( 'admin/settings-page.php' );
+function set_new_thumbnail_image( $postid, $opt, $first_img ) {
+	$fpfi_query = array();
+	$the_query = get_posts( 'post_type=' . $opt['fpfi_post_type'] );
 
-/*
-** Init the __construct
-*/	
-add_action( "init", "First_Picture_as_FirstImage", 1 );
 
-function First_Picture_as_FirstImage() {
-	global $First_Picture_as_FirstImage;
-	$First_Picture_as_FirstImage = new First_Picture_as_FirstImage();
-}
+	foreach ( $the_query as $post ) : setup_postdata( $post );
+	$firstImage = $first_img;
+	$attachment_id = attachment_url_to_postid( $firstImage );
+	if ( !get_the_post_thumbnail( $postid )) :
+		set_post_thumbnail( $postid, $attachment_id );
+	endif;
 	
+	endforeach;
+	wp_reset_postdata();
+	return $fpfi_query;
+}
+
+function fpfi_require_settings() {
+	require_once( 'admin/settings-page.php' );
+}
+
+add_action( "init", "fpfi_require_settings", 1 );
