@@ -54,10 +54,12 @@ function fpfi_options_page() { ?>
 		settings_fields( 'fpfi-settings' );
 		do_settings_sections( 'fpfi-settings' );
 		submit_button();
-		if ( $_GET['settings-updated'] ) :
+
+		$page_origin = $_GET['page'];
+		if ( ( 'first_picture_as_first_image' == $page_origin ) && ( $_GET['settings-updated'] ) ) :
 			$op = get_option( 'fpfi_settings' );
 			check_thumbnail_image($op);
-endif; ?>
+		endif; ?>
 
 	</form>
 	<?php
