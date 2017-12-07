@@ -1,7 +1,7 @@
 <?php
 /**
-* Plugin Name: First Picture as First Image
-* Description: Use fist picture in your post or page as featured image. Just activate plugin and they'll work!
+* Plugin Name: First Picture as Featured Image
+* Description: Set first picture as featured image in posts or pages that doesn't have a Featured email 
 * Version: 0.1
 * Author: Deblyn Prado
 * Text Domain: fpfi
