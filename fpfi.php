@@ -75,6 +75,13 @@ function set_new_thumbnail_image( $postid, $opt, $first_img ) {
 	return $fpfi_query;
 }
 
+add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'my_plugin_action_links' );
+
+function my_plugin_action_links( $links ) {
+   $links[] = '<a href="'. esc_url( get_admin_url( null, 'tools.php?page=first_picture_as_first_image' ) ) .'">' . __( 'Settings', 'fpfi') . '</a>';
+   return $links;
+}
+
 function fpfi_require_settings() {
 	require_once( 'admin/settings-page.php' );
 }
