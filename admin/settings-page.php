@@ -3,7 +3,7 @@ add_action( 'admin_menu', 'fpfi_add_admin_menu' );
 add_action( 'admin_init', 'fpfi_settings_init' );
 
 function fpfi_add_admin_menu() { 
-	add_submenu_page( 'tools.php', 'First Picture as First Image', 'First Picture as First Image', 'manage_options', 'first_picture_as_first_image', 'fpfi_options_page' );
+	add_submenu_page( 'tools.php', 'First Picture as Featured Image', 'First Picture as Featured Image', 'manage_options', 'first_picture_as_featured_image', 'fpfi_options_page' );
 }
 
 function fpfi_settings_init() { 
@@ -56,7 +56,7 @@ function fpfi_options_page() { ?>
 		submit_button();
 
 		$page_origin = $_GET['page'];
-		if ( ( 'first_picture_as_first_image' == $page_origin ) && ( $_GET['settings-updated'] ) ) :
+		if ( ( 'first_picture_as_featured_image' == $page_origin ) && ( $_GET['settings-updated'] ) ) :
 			$op = get_option( 'fpfi_settings' );
 			check_thumbnail_image($op);
 		endif; ?>
